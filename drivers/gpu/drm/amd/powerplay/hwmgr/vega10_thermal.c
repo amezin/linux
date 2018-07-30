@@ -552,8 +552,7 @@ int vega10_thermal_setup_fan_table(struct pp_hwmgr *hwmgr)
 	table->FanGainHbm = hwmgr->thermal_controller.
 			advanceFanControlParameters.usFanGainHbm;
 	FANTABLE_DBG(table->FanGainHbm);
-	table->FanZeroRpmEnable = hwmgr->thermal_controller.
-			advanceFanControlParameters.ucEnableZeroRPM;
+	table->FanZeroRpmEnable = 0;
 	FANTABLE_DBG(table->FanZeroRpmEnable);
 	table->FanStopTemp = hwmgr->thermal_controller.
 			advanceFanControlParameters.usZeroRPMStopTemperature;
