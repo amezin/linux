@@ -507,14 +507,19 @@ int vega10_thermal_setup_fan_table(struct pp_hwmgr *hwmgr)
 	if (!data->smu_features[GNLD_FAN_CONTROL].supported)
 		return 0;
 
+#define FANTABLE_DBG(x) printk("%s = %u\n", #x, (uint32_t)(x))
 	table->FanMaximumRpm = (uint16_t)hwmgr->thermal_controller.
 			advanceFanControlParameters.usMaxFanRPM;
+	FANTABLE_DBG(table->FanMaximumRpm);
 	table->FanThrottlingRpm = hwmgr->thermal_controller.
 			advanceFanControlParameters.usFanRPMMaxLimit;
+	FANTABLE_DBG(table->FanThrottlingRpm);
 	table->FanAcousticLimitRpm = (uint16_t)(hwmgr->thermal_controller.
 			advanceFanControlParameters.ulMinFanSCLKAcousticLimit);
+	FANTABLE_DBG(table->FanAcousticLimitRpm);
 	table->FanTargetTemperature = hwmgr->thermal_controller.
 			advanceFanControlParameters.usTMax;
+	FANTABLE_DBG(table->FanTargetTemperature);
 
 	smum_send_msg_to_smc_with_parameter(hwmgr,
 				PPSMC_MSG_SetFanTemperatureTarget,
@@ -522,28 +527,40 @@ int vega10_thermal_setup_fan_table(struct pp_hwmgr *hwmgr)
 
 	table->FanPwmMin = hwmgr->thermal_controller.
 			advanceFanControlParameters.usPWMMin * 255 / 100;
+	FANTABLE_DBG(table->FanPwmMin);
 	table->FanTargetGfxclk = (uint16_t)(hwmgr->thermal_controller.
 			advanceFanControlParameters.ulTargetGfxClk);
+	FANTABLE_DBG(table->FanTargetGfxclk);
 	table->FanGainEdge = hwmgr->thermal_controller.
 			advanceFanControlParameters.usFanGainEdge;
+	FANTABLE_DBG(table->FanGainEdge);
 	table->FanGainHotspot = hwmgr->thermal_controller.
 			advanceFanControlParameters.usFanGainHotspot;
+	FANTABLE_DBG(table->FanGainHotspot);
 	table->FanGainLiquid = hwmgr->thermal_controller.
 			advanceFanControlParameters.usFanGainLiquid;
+	FANTABLE_DBG(table->FanGainLiquid);
 	table->FanGainVrVddc = hwmgr->thermal_controller.
 			advanceFanControlParameters.usFanGainVrVddc;
+	FANTABLE_DBG(table->FanGainVrVddc);
 	table->FanGainVrMvdd = hwmgr->thermal_controller.
 			advanceFanControlParameters.usFanGainVrMvdd;
+	FANTABLE_DBG(table->FanGainVrMvdd);
 	table->FanGainPlx = hwmgr->thermal_controller.
 			advanceFanControlParameters.usFanGainPlx;
+	FANTABLE_DBG(table->FanGainPlx);
 	table->FanGainHbm = hwmgr->thermal_controller.
 			advanceFanControlParameters.usFanGainHbm;
+	FANTABLE_DBG(table->FanGainHbm);
 	table->FanZeroRpmEnable = hwmgr->thermal_controller.
 			advanceFanControlParameters.ucEnableZeroRPM;
+	FANTABLE_DBG(table->FanZeroRpmEnable);
 	table->FanStopTemp = hwmgr->thermal_controller.
 			advanceFanControlParameters.usZeroRPMStopTemperature;
+	FANTABLE_DBG(table->FanStopTemp);
 	table->FanStartTemp = hwmgr->thermal_controller.
 			advanceFanControlParameters.usZeroRPMStartTemperature;
+	FANTABLE_DBG(table->FanStartTemp);
 
 	ret = smum_smc_table_manager(hwmgr,
 				(uint8_t *)(&(data->smc_state_table.pp_table)),
