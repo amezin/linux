@@ -525,8 +525,7 @@ int vega10_thermal_setup_fan_table(struct pp_hwmgr *hwmgr)
 				PPSMC_MSG_SetFanTemperatureTarget,
 				(uint32_t)table->FanTargetTemperature);
 
-	table->FanPwmMin = hwmgr->thermal_controller.
-			advanceFanControlParameters.usPWMMin * 255 / 100;
+	table->FanPwmMin = 35;
 	FANTABLE_DBG(table->FanPwmMin);
 	table->FanTargetGfxclk = (uint16_t)(hwmgr->thermal_controller.
 			advanceFanControlParameters.ulTargetGfxClk);
