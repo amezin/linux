@@ -269,6 +269,8 @@ struct amd_pm_funcs {
 	int (*get_display_mode_validation_clocks)(void *handle,
 		struct amd_pp_simple_clock_info *clocks);
 	int (*notify_smu_enable_pwe)(void *handle);
+	int (*set_min_fan_pwm)(void *handle, u16 value);
+	int (*get_min_fan_pwm)(void *handle, u16 *value);
 };
 
 #endif

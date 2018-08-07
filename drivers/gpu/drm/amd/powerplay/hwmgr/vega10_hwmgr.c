@@ -4913,6 +4913,8 @@ static const struct pp_hwmgr_func vega10_hwmgr_funcs = {
 	.set_power_profile_mode = vega10_set_power_profile_mode,
 	.set_power_limit = vega10_set_power_limit,
 	.odn_edit_dpm_table = vega10_odn_edit_dpm_table,
+	.get_min_fan_pwm = vega10_fan_ctrl_get_min_pwm,
+	.set_min_fan_pwm = vega10_fan_ctrl_set_min_pwm,
 };
 
 int vega10_enable_smc_features(struct pp_hwmgr *hwmgr,

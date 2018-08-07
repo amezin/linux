@@ -616,3 +616,26 @@ int vega10_thermal_ctrl_uninitialize_thermal_controller(struct pp_hwmgr *hwmgr)
 	}
 	return 0;
 }
+
+int vega10_fan_ctrl_get_min_pwm(struct pp_hwmgr *hwmgr, uint16_t *value)
+{
+	struct vega10_hwmgr *data = hwmgr->backend;
+	PPTable_t *table = &(data->smc_state_table.pp_table);
+
+	*value = table->FanPwmMin;
+	return 0;
+}
+
+int vega10_fan_ctrl_set_min_pwm(struct pp_hwmgr *hwmgr, uint16_t value)
+{
+	struct vega10_hwmgr *data = hwmgr->backend;
+	PPTable_t *table = &(data->smc_state_table.pp_table);
+
+	if (value > 255)
+		value = 255;
+
+	table->FanPwmMin = value;
+	hwmgr->thermal_controller.advanceFanControlParameters.usPWMMin = value * 100 / 255;
+
+	return smum_send_msg_to_smc_with_parameter(hwmgr, PPSMC_MSG_SetFanMinPwm, table->FanPwmMin);
+}

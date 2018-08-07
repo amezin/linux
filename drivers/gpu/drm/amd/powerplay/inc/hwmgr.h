@@ -328,6 +328,8 @@ struct pp_hwmgr_func {
 	int (*set_power_limit)(struct pp_hwmgr *hwmgr, uint32_t n);
 	int (*powergate_mmhub)(struct pp_hwmgr *hwmgr);
 	int (*smus_notify_pwe)(struct pp_hwmgr *hwmgr);
+	int (*get_min_fan_pwm)(struct pp_hwmgr *hwmgr, uint16_t *value);
+	int (*set_min_fan_pwm)(struct pp_hwmgr *hwmgr, uint16_t value);
 };
 
 struct pp_table_func {

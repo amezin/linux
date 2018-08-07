@@ -1057,7 +1057,40 @@ static ssize_t amdgpu_hwmon_get_pwm1_min(struct device *dev,
 					 struct device_attribute *attr,
 					 char *buf)
 {
-	return sprintf(buf, "%i\n", 0);
+	struct amdgpu_device *adev = dev_get_drvdata(dev);
+	void *handle = adev->powerplay.pp_handle;
+	int err;
+	u16 value = 0;
+
+	if (adev->powerplay.pp_funcs->get_min_fan_pwm) {
+		err = adev->powerplay.pp_funcs->get_min_fan_pwm(handle, &value);
+		if (err)
+			return err;
+	}
+
+	return sprintf(buf, "%u\n", (unsigned int)value);
+}
+
+static ssize_t amdgpu_hwmon_set_pwm1_min(struct device *dev,
+					 struct device_attribute *attr,
+					 const char *buf, size_t count)
+{
+	struct amdgpu_device *adev = dev_get_drvdata(dev);
+	void *handle = adev->powerplay.pp_handle;
+	int err;
+	u16 value;
+
+	err = kstrtou16(buf, 10, &value);
+	if (err)
+		return err;
+
+	if (adev->powerplay.pp_funcs->set_min_fan_pwm) {
+		err = adev->powerplay.pp_funcs->set_min_fan_pwm(handle, value);
+		if (err)
+			return err;
+	}
+
+	return count;
 }
 
 static ssize_t amdgpu_hwmon_get_pwm1_max(struct device *dev,
@@ -1371,7 +1404,7 @@ static SENSOR_DEVICE_ATTR(temp1_crit, S_IRUGO, amdgpu_hwmon_show_temp_thresh, NU
 static SENSOR_DEVICE_ATTR(temp1_crit_hyst, S_IRUGO, amdgpu_hwmon_show_temp_thresh, NULL, 1);
 static SENSOR_DEVICE_ATTR(pwm1, S_IRUGO | S_IWUSR, amdgpu_hwmon_get_pwm1, amdgpu_hwmon_set_pwm1, 0);
 static SENSOR_DEVICE_ATTR(pwm1_enable, S_IRUGO | S_IWUSR, amdgpu_hwmon_get_pwm1_enable, amdgpu_hwmon_set_pwm1_enable, 0);
-static SENSOR_DEVICE_ATTR(pwm1_min, S_IRUGO, amdgpu_hwmon_get_pwm1_min, NULL, 0);
+static SENSOR_DEVICE_ATTR(pwm1_min, S_IRUGO | S_IWUSR, amdgpu_hwmon_get_pwm1_min, amdgpu_hwmon_set_pwm1_min, 0);
 static SENSOR_DEVICE_ATTR(pwm1_max, S_IRUGO, amdgpu_hwmon_get_pwm1_max, NULL, 0);
 static SENSOR_DEVICE_ATTR(fan1_input, S_IRUGO, amdgpu_hwmon_get_fan1_input, NULL, 0);
 static SENSOR_DEVICE_ATTR(in0_input, S_IRUGO, amdgpu_hwmon_show_vddgfx, NULL, 0);

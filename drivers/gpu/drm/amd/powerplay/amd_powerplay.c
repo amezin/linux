@@ -522,6 +522,43 @@ static uint32_t pp_dpm_get_fan_control_mode(void *handle)
 	return mode;
 }
 
+static int pp_dpm_set_min_fan_pwm(void *handle, uint16_t value)
+{
+	struct pp_hwmgr *hwmgr = handle;
+	int ret = 0;
+
+	if (!hwmgr || !hwmgr->pm_en)
+		return -EINVAL;
+
+	if (hwmgr->hwmgr_func->set_min_fan_pwm == NULL) {
+		pr_info("%s was not implemented.\n", __func__);
+		return 0;
+	}
+	mutex_lock(&hwmgr->smu_lock);
+	ret = hwmgr->hwmgr_func->set_min_fan_pwm(hwmgr, value);
+	mutex_unlock(&hwmgr->smu_lock);
+	return ret;
+}
+
+static int pp_dpm_get_min_fan_pwm(void *handle, uint16_t *value)
+{
+	struct pp_hwmgr *hwmgr = handle;
+	int ret = 0;
+
+	if (!hwmgr || !hwmgr->pm_en)
+		return -EINVAL;
+
+	if (hwmgr->hwmgr_func->get_min_fan_pwm == NULL) {
+		*value = 0;
+		return 0;
+	}
+
+	mutex_lock(&hwmgr->smu_lock);
+	ret = hwmgr->hwmgr_func->get_min_fan_pwm(hwmgr, value);
+	mutex_unlock(&hwmgr->smu_lock);
+	return ret;
+}
+
 static int pp_dpm_set_fan_speed_percent(void *handle, uint32_t percent)
 {
 	struct pp_hwmgr *hwmgr = handle;
@@ -1269,4 +1306,6 @@ static const struct amd_pm_funcs pp_dpm_funcs = {
 	.display_clock_voltage_request = pp_display_clock_voltage_request,
 	.get_display_mode_validation_clocks = pp_get_display_mode_validation_clocks,
 	.notify_smu_enable_pwe = pp_notify_smu_enable_pwe,
+	.set_min_fan_pwm = pp_dpm_set_min_fan_pwm,
+	.get_min_fan_pwm = pp_dpm_get_min_fan_pwm,
 };
