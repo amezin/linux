@@ -1140,6 +1140,8 @@ int smu7_enable_power_containment(struct pp_hwmgr *hwmgr)
 			if (0 == smc_result) {
 				hwmgr->default_power_limit = hwmgr->power_limit =
 						cac_table->usMaximumPowerDeliveryLimit;
+				hwmgr->max_power_limit =
+						hwmgr->default_power_limit;
 				data->power_containment_features |=
 						POWERCONTAINMENT_FEATURE_PkgPwrLimit;
 

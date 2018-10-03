@@ -937,7 +937,7 @@ static int pp_set_power_limit(void *handle, uint32_t limit)
 	if (limit == 0)
 		limit = hwmgr->default_power_limit;
 
-	if (limit > hwmgr->default_power_limit)
+	if (limit > hwmgr->max_power_limit)
 		return -EINVAL;
 
 	mutex_lock(&hwmgr->smu_lock);
@@ -947,7 +947,7 @@ static int pp_set_power_limit(void *handle, uint32_t limit)
 	return 0;
 }
 
-static int pp_get_power_limit(void *handle, uint32_t *limit, bool default_limit)
+static int pp_get_power_limit(void *handle, uint32_t *limit, bool max_limit)
 {
 	struct pp_hwmgr *hwmgr = handle;
 
@@ -956,8 +956,8 @@ static int pp_get_power_limit(void *handle, uint32_t *limit, bool default_limit)
 
 	mutex_lock(&hwmgr->smu_lock);
 
-	if (default_limit)
-		*limit = hwmgr->default_power_limit;
+	if (max_limit)
+		*limit = hwmgr->max_power_limit;
 	else
 		*limit = hwmgr->power_limit;
 

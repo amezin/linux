@@ -1342,6 +1342,7 @@ int vega10_enable_power_containment(struct pp_hwmgr *hwmgr)
 
 	hwmgr->default_power_limit = hwmgr->power_limit =
 			(uint32_t)(tdp_table->usMaximumPowerDeliveryLimit);
+	hwmgr->max_power_limit = hwmgr->default_power_limit;
 
 	if (PP_CAP(PHM_PlatformCaps_PowerContainment)) {
 		if (data->smu_features[GNLD_PPT].supported)

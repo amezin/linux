@@ -1554,6 +1554,7 @@ static int vega20_enable_dpm_tasks(struct pp_hwmgr *hwmgr)
 			return result);
 	hwmgr->power_limit =
 		hwmgr->default_power_limit = smum_get_argument(hwmgr);
+	hwmgr->max_power_limit = hwmgr->default_power_limit;
 
 	return 0;
 }
