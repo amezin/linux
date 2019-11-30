@@ -110,7 +110,7 @@ static int qcom_cpufreq_kryo_name_version(struct device *cpu_dev,
 
 static int qcom_cpufreq_probe(struct platform_device *pdev)
 {
-	struct opp_table **opp_tables;
+	struct opp_table *opp_tables[NR_CPUS] = {0};
 	int (*get_version)(struct device *cpu_dev,
 			   struct nvmem_cell *speedbin_nvmem,
 			   u32 *versions);
@@ -155,10 +155,6 @@ static int qcom_cpufreq_probe(struct platform_device *pdev)
 	if (ret)
 		return ret;
 
-	opp_tables = kcalloc(num_possible_cpus(), sizeof(*opp_tables), GFP_KERNEL);
-	if (!opp_tables)
-		return -ENOMEM;
-
 	for_each_possible_cpu(cpu) {
 		cpu_dev = get_cpu_device(cpu);
 		if (NULL == cpu_dev) {
@@ -177,10 +173,8 @@ static int qcom_cpufreq_probe(struct platform_device *pdev)
 
 	cpufreq_dt_pdev = platform_device_register_simple("cpufreq-dt", -1,
 							  NULL, 0);
-	if (!IS_ERR(cpufreq_dt_pdev)) {
-		platform_set_drvdata(pdev, opp_tables);
+	if (!IS_ERR(cpufreq_dt_pdev))
 		return 0;
-	}
 
 	ret = PTR_ERR(cpufreq_dt_pdev);
 	dev_err(cpu_dev, "Failed to register platform device\n");
@@ -191,23 +185,13 @@ free_opp:
 			break;
 		dev_pm_opp_put_supported_hw(opp_tables[cpu]);
 	}
-	kfree(opp_tables);
 
 	return ret;
 }
 
 static int qcom_cpufreq_remove(struct platform_device *pdev)
 {
-	struct opp_table **opp_tables = platform_get_drvdata(pdev);
-	unsigned int cpu;
-
 	platform_device_unregister(cpufreq_dt_pdev);
-
-	for_each_possible_cpu(cpu)
-		dev_pm_opp_put_supported_hw(opp_tables[cpu]);
-
-	kfree(opp_tables);
-
 	return 0;
 }
 
