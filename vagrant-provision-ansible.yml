@@ -1,0 +1,13 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+  - ansible.builtin.dnf:
+      name: '*'
+      state: latest
+  - ansible.builtin.dnf:
+      name: [kernel-devel, lm_sensors, usbutils, bc]
+      state: latest
+  - ansible.builtin.lineinfile:
+      path: ~/.bash_profile
+      line: cd /vagrant

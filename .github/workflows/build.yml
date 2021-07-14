@@ -1,0 +1,22 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        kconfig:
+          - "-e CONFIG_PM"
+          - "-d CONFIG_PM"
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - run: echo "::add-matcher::.github/workflows/gcc-problem-matcher.json"
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y libelf-dev
+      - run: cp .github/workflows/all.config .
+      - run: scripts/config --file all.config ${{ matrix.kconfig }}
+      - run: KCONFIG_ALLCONFIG=1 make allnoconfig
+      - run: make -k -j$(nproc)
